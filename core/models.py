@@ -14,7 +14,7 @@ class Umarell(models.Model):
 class UmarellBadge(models.Model):
 	badgeCriteria = models.TextField()
 	name = models.TextField()
-	image = models.ImageField()
+	image = models.ImageField(upload_to="/tmp")
 
 class UmarellAward(models.Model):
 	umarell = models.ForeignKey(Umarell)

@@ -7,4 +7,4 @@ class Thread(models.Model):
 	date = models.DateTimeField(auto_now=True)
 
 class ThreadResponse(Thread):
-	thread = models.ForeignKey(Thread)
+	thread = models.ForeignKey(Thread, related_name="responses")
