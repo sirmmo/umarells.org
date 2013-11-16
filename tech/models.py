@@ -1,5 +1,5 @@
 from django.db import models
-from umarells.core.models import *
+from core.models import *
 
 
 class Element(models.Model):
