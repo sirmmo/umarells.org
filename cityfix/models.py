@@ -9,7 +9,7 @@ class CityFix(models.Model):
 	lat = models.FloatField()
 
 	umarell = models.ForeignKey(Umarell)
-	pic = models.ImageField(null=True, blank=True)
+	pic = models.ImageField(null=True, blank=True, upload_to="/tmp/")
 
 	description = models.TextField(null=True, blank=True)
 
