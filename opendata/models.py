@@ -14,4 +14,4 @@ class Evaluation(models.Model):
 	umarell = models.ForeignKey(Umarell)
 	resource = models.ForeignKey(InternetResource)
 	comment = models.TextField(null=True, blank=True)
-	value = models.IntegerField(min_value = 1)
+	value = models.IntegerField()
