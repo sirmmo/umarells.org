@@ -1,5 +1,10 @@
 # Django settings for umarells project.
 
+try:
+    from local_settings import *
+except:
+    pass
+    
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -124,6 +129,14 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'core',
+    'cityfix',
+    'forum',
+    'opendata', 
+    'tech',
+
+    'south',
+    'social.apps.django_app.default'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -154,3 +167,18 @@ LOGGING = {
         },
     }
 }
+
+SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
+
+AUTHENTICATION_BACKENDS = (
+      'social.backends.open_id.OpenIdAuth',
+      'social.backends.google.GoogleOpenId',
+      'social.backends.google.GoogleOAuth2',
+      'social.backends.twitter.TwitterOAuth',
+      'social.backends.facebook.FacebookOAuth2',
+      'social.backends.facebook.FacebookAppOAuth2',
+      'social.backends.github.GithubOAuth2',
+
+      'django.contrib.auth.backends.ModelBackend',
+  )
+
