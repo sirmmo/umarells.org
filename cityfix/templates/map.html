@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block style %}	<link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.ie.css" /><![endif]-->
+	<style>
+
+	#map{
+		width:100%;
+		height:90%;
+	}
+
+	</style>
+	{% endblock %}
+	{% block script %}
+	<script src="http://leafletjs.com/dist/leaflet.js"></script>
+	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+	<script>
+	$(function(){
+		// replace "toner" here with "terrain" or "watercolor"
+		var layer = new L.StamenTileLayer("toner-lite");
+		var map = new L.Map("map", {
+			center: new L.LatLng(44.5075, 11.3514),
+			zoom: 17
+		});
+		map.addLayer(layer);
+
+		$.getJSON("{% url 'cityfix_map' %}", function(data){
+			L.geoJson(data,{
+				onEachFeature: function(feature, ilayer) {
+					var popupContent = "<table>";
+					for (var p in feature.properties){
+						if (p != "images")
+							popupContent += "<tr><td><b>"+p+"</b></td><td>"+feature.properties[p]+"</td></tr>";
+					}
+					popupContent +="</table>";
+					if ("images" in feature.properties){
+						popupContent +="<div>";
+						for (var i in feature.properties.images)
+							popupContent +="<a href='"+feature.properties.images[i]+"' taget='blank'><img src='"+feature.properties.images[i]+"' width='100'></a>";
+						popupContent +="</div>";
+					}
+					
+					ilayer.bindPopup(popupContent);
+				}
+			}).addTo(map);
+		});
+	});
+	</script>
+	{% endblock %}
+
+{% block content %}
+<div id="map"></div>
+{% endblock %}

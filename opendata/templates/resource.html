@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load gravatar %}
+{% block content %}
+<div class="container">
+	<div class="jumbotron">
+				<h2><i class="fa fa-file-o fa-fw"></i>{{dataset.name}}</h2>
+	</div>
+</div>
+
+<div class="container">
+	<div class="jumbotron col-md-6">
+		<div>{{dataset.resourceType}} <a href="{{dataset.url}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a></div>
+		<div>Vote: <span title="{{dataset.quality}}">{%for star in dataset.quality_array %}
+			{% if star == "*" %}
+				<i class="fa fa-star fa-fw"></i>
+			{% elif star == "_" %}
+				<i class="fa fa-star-o fa-fw"></i>
+			{% elif star == "-" %}
+				<i class="fa fa-star-half-o fa-fw"></i>
+			{% endif%}
+		{%endfor%}</span></div>
+	</div>
+	<div class="jumbotron col-md-5 col-md-offset-1"><small>{{dataset.description}}</small></div>
+</div>
+<div class="container">
+	<ul class="list-group">
+		{% for evaluation in dataset.evaluations.all %}
+		<li class="list-group-item row">
+			<div class="col-md-1"><a title="{{evaluation.umarell.user.get_full_name}}" href="/accounts/{{evaluation.umarell.user.username}}">{%gravatar evaluation.umarell.user.email 80 %}</a></div>
+			<div class="col-md-1">
+				{%for star in evaluation.value_array%}
+					{% if star == "*" %}
+						<i class="fa fa-star fa-fw"></i>
+					{% elif star == "_" %}
+						<i class="fa fa-star-o fa-fw"></i>
+					{% endif%}
+				{%endfor%}
+			</div>
+			<div class="col-md-10">{{evaluation.comment}} - {{evaluation.datetime}}</div>
+		</li>
+		{% endfor %}
+	</ul>
+	<div class="jumbotron">
+		<a href="{% url 'eval_opendata' %}?resource={{dataset.id}}" class="btn btn-success" title="Evaluate"><i class="fa fa-fw fa-star-half-o"></i></a>
+		<a href="{% url 'forum' %}?topic=opendata&resource={{dataset.id}}" class="btn btn-success" title="Discuss"><i class="fa fa-fw fa-bullhorn"></i></a>
+	</div>
+</div>
+{% endblock %}

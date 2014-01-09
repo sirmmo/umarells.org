@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load gravatar %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="contanier">
+		<div class="row">
+			<div class="col-md-1">{% gravatar user.email 100 %}</div>
+			<h1 class="col-md-10">{{user.first_name}} {{user.last_name}}</h1>
+		</div>	
+	</div>
+</div>
+<div class="container">
+	<h3>About:</h3>
+	{% for info in user.profile.infos %}
+	{{info}}
+	{% endfor %}
+</div>
+<div class="container">
+	<h3>Activities:</h3>
+	<ul class="list-group">
+	{% for info in user.profile.all.0.evaluations.all %}
+		<li class="list-group-item row">
+			<div class="col-md-1"><i class="fa fa-eye fa-fw fa-3x"></i></div>
+			<div class="col-md-3"><a href="{% url 'show_opendata' resource=info.resource.id %}">{{info.resource.name}}</a></div>
+			<div class="col-md-1">
+				{%for star in info.value_array%}
+					{% if star == "*" %}
+						<i class="fa fa-star fa-fw"></i>
+					{% elif star == "_" %}
+						<i class="fa fa-star-o fa-fw"></i>
+					{% endif%}
+				{%endfor%}
+			</div>
+			<div class="col-md-7">{{info.comment}} - {{info.datetime}}</div>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
+<div class="container">
+	<h3>Badges:</h3>
+	{% for award in user.profile.awards %}
+	{{award}}
+	{% endfor %}
+</div>
+<div class="container">
+	<h3>Topics:</h3>
+	{% for topic in user.profile.topics %}
+	{{topic}}
+	{% endfor %}
+</div>
+{% endblock %}

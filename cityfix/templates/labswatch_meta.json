@@ -1,0 +1,77 @@
+{
+    "fields": {
+        "infrastructure": {
+            "options": {
+                "1": "Rete elettrica",
+                "0": "Rete telefonica",
+                "2": "Rete idrica",
+                "3": "Rete semaforica",
+                "4": "Rete gas",
+                "5": "Teleriscaldamento",
+                "6": "Telecomunicazioni",
+                "7": "Videosorveglianza"
+            },
+            "sort": [
+                "0",
+                "1",
+                "2",
+                "3"
+            ],
+            "title": "Infrastruttura"
+        },
+        "note": {
+            "description": "Caratteristiche dell'anomalia.",
+            "title": "Descrizione"
+        },
+        "operator": {
+            "description": "Ente responsabile dell'installazione.",
+            "options": {
+                "4": "Hera",
+                "0": "Telecom",
+                "3": "Enel",
+                "5": "Comune di Bologna",
+                "2": "Wind",
+                "1": "Vodafone"
+            },
+            "sort": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+            ],
+            "title": "Operatore"
+        },
+        "sitetype": {
+            "options": {
+                "0": "Sede stradale",
+                "1": "Area verde"
+            },
+            "sort": [
+                "0",
+                "1"
+            ],
+            "title": "Sede"
+        },
+        "type": {
+            "options": {
+                "1": "Non conformit\u00e0",
+                "0": "Guasto"
+            },
+            "sort": [
+                "0",
+                "1"
+            ],
+            "title": "Tipologia"
+        }
+    },
+    "form_sort": [
+        "type",
+        "infrastructure",
+        "sitetype",
+        "operator",
+        "note"
+    ],
+    "title": "Segnalazione"
+}

@@ -1,1 +1,24 @@
 {% extends "base.html" %}
+
+{% load gravatar %}
+
+
+{% block content %}
+
+<div class="jumbotron">
+	<div class="container">
+		<h1>Umarells.org</h1>
+	</div>
+</div>
+<div class="container">
+	{% for umarell in umarells%}
+		<div class="col-md-3">
+			<div class="col-md-3">{% gravatar umarell.user.email 50 %}</div>
+			<div class="col-md-9">
+				<div class="col-md-12"><a hreF="/accounts/{{umarell.user.username}}"><b>{{umarell.user.get_full_name}}</b></a></div>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+{% endblock %}

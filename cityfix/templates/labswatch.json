@@ -1,0 +1,34 @@
+{
+    "it.labs.BOIssue": {
+        "attributes": {
+            "infrastructure": {
+                "required": true,
+                "type": "it.labs.Infrastructure"
+            },
+            "note": {
+                "required": false,
+                "type": "it.labs.String"
+            },
+            "operator": {
+                "required": true,
+                "type": "it.labs.Operator"
+            },
+            "sitetype": {
+                "required": true,
+                "type": "it.labs.SiteType"
+            },
+            "type": {
+                "required": true,
+                "type": "it.labs.ReportClass"
+            }
+        },
+        "depth": {
+            "connection": -1,
+            "containment": -1,
+            "product": -1
+        },
+        "is_a": "it.labs.Thing",
+        "is_abstract": false,
+        "is_base": false
+    }
+}

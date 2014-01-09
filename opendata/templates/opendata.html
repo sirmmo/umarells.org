@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+	<div class="datasets">
+		<table class="table table-striped">
+			<tr><th> </th><th> </th><th>Dataset</th><th>Description</th><th>Quality</th><th>Actions</th></tr>
+		{% for dataset in datasets%}
+			<tr>
+				<td>{{dataset.resourceType}}</td>
+				<td><a href="{{dataset.url}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a></td>
+				<td><a href="{% url 'show_opendata' resource=dataset.id %}">{{dataset.name}}</a></td>
+				<td>{{dataset.description}}</td>
+				<td>{{dataset.quality}}</td>
+				<td>
+					<a href="{% url 'eval_opendata' %}?resource={{dataset.id}}" class="btn btn-success form-control" title="Evaluate"><i class="fa fa-fw fa-star-half-o"></i></a>
+					<a href="{% url 'forum' %}?topic=opendata&resource={{dataset.id}}" class="btn btn-success form-control" title="Discuss"><i class="fa fa-fw fa-bullhorn"></i></a>
+				</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+	<div class="jumbotron">
+		<a class="btn btn-success" href="{% url 'add_opendata' %}"><i class="fa fa-plus fa-fw"></i>Add Dataset</a>
+		<div class="btn-group">
+			<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+				<i class="fa fa-plus fa-fw"></i>Add Datacatalog <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="{% url 'add_opendata' %}?mode=ckan">CKAN</a></li>
+				<li><a href="{% url 'add_opendata' %}?mode=socrata">Socrata</a></li>
+			</ul>
+		</div>
+		<a class="btn btn-info" href="{% url 'get_opendata' %}
+		"><i class="fa fa-chevron-down fa-fw"></i>Download table as CSV</a>
+	</div>
+</div>
+{% endblock %}
