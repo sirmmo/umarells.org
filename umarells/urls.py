@@ -8,8 +8,9 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'core.views.index', name='index'),
 
-    url(r'^opendata$', include("opendata.urls")),
-    url(r'^cityfix/', include("cityfix.urls")),
+    url(r'^opendata', include("opendata.urls")),
+    url(r'^auth', include("auth.urls")),
+    url(r'^cityfix', include("cityfix.urls")),
 
     url(r'^forum$', 'forum.views.index', name='forum'),
 

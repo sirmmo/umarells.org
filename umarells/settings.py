@@ -137,7 +137,7 @@ INSTALLED_APPS = (
     'django_gravatar',
     'bootstrap3',
     'modeltranslation', 
-
+    'auth',
 
     'south',
     'social.apps.django_app.default'

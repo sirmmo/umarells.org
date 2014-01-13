@@ -23,27 +23,36 @@
 			zoom: 17
 		});
 		map.addLayer(layer);
-
-		$.getJSON("{% url 'cityfix_map' %}", function(data){
-			L.geoJson(data,{
-				onEachFeature: function(feature, ilayer) {
-					var popupContent = "<table>";
-					for (var p in feature.properties){
-						if (p != "images")
-							popupContent += "<tr><td><b>"+p+"</b></td><td>"+feature.properties[p]+"</td></tr>";
+		L_opts = {
+					onEachFeature: function(feature, ilayer) {
+						var popupContent = "<table>";
+						for (var p in feature.properties){
+							if (p != "images")
+								popupContent += "<tr><td><b>"+p+"</b></td><td>"+feature.properties[p]+"</td></tr>";
+						}
+						popupContent +="</table>";
+						if ("images" in feature.properties){
+							popupContent +="<div>";
+							for (var i in feature.properties.images)
+								popupContent +="<a href='"+feature.properties.images[i]+"' taget='blank'><img src='"+feature.properties.images[i]+"' width='100'></a>";
+							popupContent +="</div>";
+						}
+						
+						ilayer.bindPopup(popupContent);
 					}
-					popupContent +="</table>";
-					if ("images" in feature.properties){
-						popupContent +="<div>";
-						for (var i in feature.properties.images)
-							popupContent +="<a href='"+feature.properties.images[i]+"' taget='blank'><img src='"+feature.properties.images[i]+"' width='100'></a>";
-						popupContent +="</div>";
-					}
-					
-					ilayer.bindPopup(popupContent);
 				}
-			}).addTo(map);
+		var vectors = L.geoJson(null, L_opts);
+
+		map.on('moveend', function(){
+			var bb = map.getBounds().toBBoxString();
+			map.removeLayer(vectors);
+			vectors = L.geoJson(null, L_opts);
+			$.getJSON("{% url 'cityfix_map' %}?bbox="+bb, function(data){
+				vectors.addData(data).addTo(map);
+			});
 		});
+
+		
 	});
 	</script>
 	{% endblock %}

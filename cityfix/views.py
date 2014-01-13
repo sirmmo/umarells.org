@@ -14,6 +14,13 @@ def index(request):
 	return render_to_response('map.html',{"user":request.user if request.user.is_authenticated() else None,})
 
 def map(request):
+	bbox = json.loads("[%s]" % request.REQUEST.get('bbox', "-90,-180,90,180"))
+	f = {
+		"lon__gte": bbox[0],
+		"lat__gte": bbox[1],
+		"lon__lte": bbox[2],
+		"lat__lte": bbox[3],
+	}
 	geoj = { 
 		"type": "FeatureCollection",
 		"features": [{ 
@@ -31,7 +38,7 @@ def map(request):
 				"images":[pic.url() for pic in cf.pics.all()]
 
 			}
-		} for cf in CityFix.objects.all()]
+		} for cf in CityFix.objects.filter(**f)]
 	} 
 	return HttpResponse(json.dumps(geoj))
 '''
@@ -63,7 +70,7 @@ def push(request):
 
 from django.core.files.images import ImageFile
 import base64
-
+import os
 @csrf_exempt
 def push_file(request, uuid):
 	if request.REQUEST.get('data') is not None :
@@ -99,6 +106,6 @@ def image(request, uuid, id):
 	print "uio"
 	f = open(pic, "r")
 	mime = mimetypes.guess_type(pic)
-	res = HttpResponse(f, mimetype = mime[0])
-	res['Content-Disposition'] = 'attachment; filename=' + os.path.basename(pic)    
+	res = HttpResponse(f, mimetype = mime[0])   
+	return res
 
