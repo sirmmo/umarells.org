@@ -37,9 +37,8 @@ class CityFix(models.Model):
 	lon = models.FloatField()
 	lat = models.FloatField()
 
-	
-
 	umarell = models.ForeignKey(Umarell, null=True)
+	user = models.ForeignKey(User, null=True)
 	description = models.TextField(null=True, blank=True)
 	fixtype = models.ForeignKey(FixType)
 	sitetype = models.ForeignKey(SiteType)
@@ -50,6 +49,13 @@ class CityFix(models.Model):
 	def __str__(self):
 		return self.description
 
+	class Meta:
+		verbose_name_plural = "city fixes"
+		verbose_name = "city fix"
+
+	
+
+
 class Pics(models.Model):
 	fix = models.ForeignKey(CityFix, related_name="pics")
 	pic = models.TextField(null=True)
@@ -59,5 +65,9 @@ class Pics(models.Model):
 
 	def url(self):
 		return reverse('cityfix_img', kwargs={"uuid":self.fix.uuid, "id":self.id})
+
+	class Meta:
+		verbose_name_plural = "pics"
+		verbose_name = "pic"
 
 

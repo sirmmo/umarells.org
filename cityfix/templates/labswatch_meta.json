@@ -2,20 +2,20 @@
     "fields": {
         "infrastructure": {
             "options": {
-                "1": "Rete elettrica",
-                "0": "Rete telefonica",
-                "2": "Rete idrica",
-                "3": "Rete semaforica",
-                "4": "Rete gas",
-                "5": "Teleriscaldamento",
-                "6": "Telecomunicazioni",
-                "7": "Videosorveglianza"
+                "2": "Rete elettrica",
+                "1": "Rete telefonica",
+                "3": "Rete idrica",
+                "4": "Rete semaforica",
+                "5": "Rete gas",
+                "6": "Teleriscaldamento",
+                "7": "Telecomunicazioni",
+                "8": "Videosorveglianza"
             },
             "sort": [
-                "0",
                 "1",
                 "2",
-                "3"
+                "3",
+                "4"
             ],
             "title": "Infrastruttura"
         },
@@ -26,41 +26,47 @@
         "operator": {
             "description": "Ente responsabile dell'installazione.",
             "options": {
-                "4": "Hera",
-                "0": "Telecom",
-                "3": "Enel",
-                "5": "Comune di Bologna",
-                "2": "Wind",
-                "1": "Vodafone"
+                "5": "Hera",
+                "1": "Telecom",
+                "7": "Fastweb",
+                "4": "Enel",
+                "6": "Comune di Bologna",
+                "3": "Wind",
+                "2": "Vodafone",
+                "8": "Metroweb",
+                "9": "Lepida"
             },
             "sort": [
-                "0",
                 "1",
                 "2",
                 "3",
                 "4",
-                "5"
+                "5",
+                "6",
+                "7",
+                "8",
+                "9"
             ],
             "title": "Operatore"
         },
         "sitetype": {
             "options": {
-                "0": "Sede stradale",
-                "1": "Area verde"
+                "1": "Sede stradale",
+                "2": "Area verde"
             },
             "sort": [
-                "0",
-                "1"
+                "1",
+                "2"
             ],
             "title": "Sede"
         },
         "type": {
             "options": {
-                "1": "Non conformit\u00e0",
-                "0": "Guasto"
+                "1": "Non conformita'",
+                "2": "Guasto"
             },
             "sort": [
-                "0",
+                "2",
                 "1"
             ],
             "title": "Tipologia"

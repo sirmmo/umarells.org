@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt 
 
@@ -7,11 +7,21 @@ from datetime import datetime
 import uuid
 
 from .models import *
+from auth.models import *
+
+
+
+from pytz import timezone
+import pytz
 
 import json
 
 def index(request):
-	return render_to_response('map.html',{"user":request.user if request.user.is_authenticated() else None,})
+	dynamic_base = "base.html"
+	if 'labs.it' in request.META.get('HTTP_HOST'):
+		dynamic_base = "citywatch_base.html"
+	return render_to_response('map.html',{"dynamic_base":dynamic_base, "user":request.user if request.user.is_authenticated() else None,})
+
 
 def map(request):
 	bbox = json.loads("[%s]" % request.REQUEST.get('bbox', "-90,-180,90,180"))
@@ -30,12 +40,15 @@ def map(request):
 				"coordinates": [cf.lon, cf.lat]
 			},
 			"properties": {
-				"note":cf.description,
-				"fixtype":str(cf.fixtype),
-				"sitetype":str(cf.sitetype),
-				"operator":str(cf.operator),
-				"infrastructure":str(cf.infrastructure),
-				"images":[pic.url() for pic in cf.pics.all()]
+				"ID":cf.id,
+				"Nota":cf.description,
+				"Utente":cf.user.username if cf.user is not None else "",
+				"Tipo di problematica":str(cf.fixtype),
+				"Tipo di collocazione":str(cf.sitetype),
+				"Operatore":str(cf.operator),
+				"Infrastruttura":str(cf.infrastructure),
+				"images":[pic.url() for pic in cf.pics.all()],
+				"Data":cf.sent.astimezone(timezone("Europe/Rome")).strftime("%d/%m/%Y %H:%M")
 
 			}
 		} for cf in CityFix.objects.filter(**f)]
@@ -54,19 +67,43 @@ def push(request):
 	data = json.loads(request.REQUEST.get('data'))
 	form = data.get('form')
 	meta = data.get('meta')
+
+	tok = request.REQUEST.get('token')
+
+	user = Token.objects.get(uuid = tok).user
+
 	cf = CityFix()
 	cf.lon = meta.get('position')[0]
 	cf.lat = meta.get('position')[1]
 	cf.sent = datetime.utcfromtimestamp(meta.get('timestamp')/1000)
-
+	cf.user = user
 	cf.description = form.get('note')
-	cf.fixtype = FixType.objects.get(id=int(form.get('type'))+1)
-	cf.sitetype = SiteType.objects.get(id=int(form.get('sitetype'))+1)
-	cf.operator = Operator.objects.get(id=int(form.get('operator'))+1)
-	cf.infrastructure = Infrastructure.objects.get(id=int(form.get('infrastructure'))+1)
+	cf.fixtype = FixType.objects.get(id=int(form.get('type')))
+	cf.sitetype = SiteType.objects.get(id=int(form.get('sitetype')))
+	cf.operator = Operator.objects.get(id=int(form.get('operator')))
+	cf.infrastructure = Infrastructure.objects.get(id=int(form.get('infrastructure')))
+
 	cf.save()
 
 	return HttpResponse(json.dumps({"success":True, "uuid":str(cf.uuid)}))
+
+
+def app(request):
+	import os.path
+	import mimetypes
+	mimetypes.init()
+
+
+	file_path = "/var/www/umarells/app/CityWatch.apk"
+	fsock = open(file_path,"r")
+	file_name = os.path.basename(file_path)
+	file_size = os.path.getsize(file_path)
+	print "file size is: " + str(file_size)
+	mime_type_guess = mimetypes.guess_type(file_name)
+	
+	response = HttpResponse(fsock, mimetype=mime_type_guess[0])
+	response['Content-Disposition'] = 'attachment; filename=' + file_name            
+	return response 
 
 from django.core.files.images import ImageFile
 import base64
@@ -95,7 +132,45 @@ def form(request):
 	return render_to_response("labswatch.json")
 
 def form_meta(request):
-	return render_to_response('labswatch_meta.json')
+	ret = {}
+
+	ret["fields"] = {}
+	ret["title"] = "Segnalazione"
+	ret["fields"] = {
+		"infrastructure":{
+			"options":{i.id:i.name for i in Infrastructure.objects.all()},
+			"sort":["1","2","3","4"],
+       		"title": "Infrastruttura"
+			},
+		"note":{
+            "description": "Caratteristiche dell'anomalia.",
+            "title": "Descrizione"
+		},
+		"operator":{
+       		"description": "Ente responsabile dell'installazione.",
+			"options":{i.id:i.name for i in Operator.objects.all()},
+			"sort":["1","2","3","4","5","6","7","8","9"],
+        	"title": "Operatore"
+		},
+		"sitetype":{
+			"options":{i.id:i.name for i in SiteType.objects.all()},
+			"sort":["1","2"],
+        	"title": "Sede"
+		},
+		"type":{
+			"options":{i.id:i.name for i in FixType.objects.all()},
+			"sort":["2","1"],
+        	"title": "Tipologia"
+		},
+	}
+	ret["form_sort"] = [
+				        "type",
+				        "infrastructure",
+				        "sitetype",
+				        "operator",
+				        "note"
+				    ]
+	return HttpResponse(json.dumps(ret))
 
 def image(request, uuid, id):
 	import mimetypes

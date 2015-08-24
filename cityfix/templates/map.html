@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends dynamic_base %}
 
 {% block style %}	<link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.ie.css" /><![endif]-->
@@ -9,19 +9,35 @@
 		height:90%;
 	}
 
+    .leaflet-popup-content{
+      min-width: 350px;
+    }
 	</style>
 	{% endblock %}
 	{% block script %}
 	<script src="http://leafletjs.com/dist/leaflet.js"></script>
 	<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
 	<script>
+	function success(position){
+		map.setView(new L.LatLng(position.coords.latitude, position.coords.longitude), 17);
+	}
+	function error(){
+		map.setView(new L.LatLng(44.5075, 11.3514), 17);
+	}
+
+	var map;
+
 	$(function(){
 		// replace "toner" here with "terrain" or "watercolor"
+
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(success, error);
+		} else {
+			error('not supported');
+		}
+
 		var layer = new L.StamenTileLayer("toner-lite");
-		var map = new L.Map("map", {
-			center: new L.LatLng(44.5075, 11.3514),
-			zoom: 17
-		});
+		map = new L.Map("map");
 		map.addLayer(layer);
 		L_opts = {
 					onEachFeature: function(feature, ilayer) {
@@ -34,7 +50,7 @@
 						if ("images" in feature.properties){
 							popupContent +="<div>";
 							for (var i in feature.properties.images)
-								popupContent +="<a href='"+feature.properties.images[i]+"' taget='blank'><img src='"+feature.properties.images[i]+"' width='100'></a>";
+								popupContent +="<a href='"+feature.properties.images[i]+"' target='_blank'><img src='"+feature.properties.images[i]+"' width='100'></a>";
 							popupContent +="</div>";
 						}
 						
